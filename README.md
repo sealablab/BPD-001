@@ -195,21 +195,21 @@ BPD-001/
 │   │   ├── llms.txt
 │   │   └── CLAUDE.md
 │   │
-│   └── bpd-vhdl/             # VHDL probe interface
-│       ├── src/
-│       │   └── fi_probe_interface.vhd
-│       ├── tests/
-│       ├── llms.txt
-│       └── CLAUDE.md
+│   ├── bpd-vhdl/             # VHDL probe interface
+│   │   ├── src/
+│   │   │   └── fi_probe_interface.vhd
+│   │   ├── tests/
+│   │   ├── llms.txt
+│   │   └── CLAUDE.md
+│   │
+│   └── examples/             # Integration examples
+│       └── quickstart.py     # DS1120A basic usage
 │
 ├── libs/                     # Upstream Dependencies (git submodules)
 │   ├── moku-models/          # Moku platform specifications
 │   ├── riscure-models/       # DS1120A probe specs
 │   ├── forge-vhdl/           # VHDL utilities
 │   └── forge-codegen/        # YAML → VHDL generator
-│
-├── examples/
-│   └── quickstart.py         # DS1120A basic usage
 │
 ├── llms.txt                  # Root navigation
 ├── CLAUDE.md                 # Project overview
@@ -381,7 +381,7 @@ fault = moku.get_status_register(2)
 ### User Guides
 
 - **[BPD-README.md](BPD-README.md)** - Complete development guide
-- **[examples/quickstart.py](examples/quickstart.py)** - Working example
+- **[examples/quickstart.py](bpd/examples/quickstart.py)** - Working example
 
 ### For AI Assistants
 

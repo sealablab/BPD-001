@@ -40,11 +40,11 @@ BPD-001/
 │   ├── bpd-drivers/               # Probe-specific drivers (Python)
 │   │   └── ds1120a.py             # DS1120A driver (reference)
 │   │
-│   └── bpd-vhdl/                  # Vendor-agnostic VHDL
-│       └── fi_probe_interface.vhd # Standard FI interface
-│
-└── examples/                      # Integration examples (TODO)
-    └── bpd-demo-instrument/       # Full Moku instrument using BPD
+│   ├── bpd-vhdl/                  # Vendor-agnostic VHDL
+│   │   └── fi_probe_interface.vhd # Standard FI interface
+│   │
+│   └── examples/                  # Integration examples (TODO)
+│       └── bpd-demo-instrument/   # Full Moku instrument using BPD
 ```
 
 ### Design Philosophy

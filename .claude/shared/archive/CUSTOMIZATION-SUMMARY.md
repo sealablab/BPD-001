@@ -186,7 +186,7 @@ BPD-001/
 │       └── tests/
 │           └── test_fi_interface.py
 │
-├── examples/
+├── bpd/examples/
 │   └── quickstart.py              # Demo usage
 │
 ├── BPD-README.md                  # ⭐ BPD-specific guide ⭐
@@ -251,7 +251,7 @@ probe_ctrl : entity work.fi_probe_interface
 
 ```bash
 # Run quickstart example
-python examples/quickstart.py
+python bpd/examples/quickstart.py
 ```
 
 ### Full Test Suite
@@ -348,7 +348,7 @@ pytest bpd/bpd-vhdl/tests/
 - `bpd/bpd-vhdl/README.md` - VHDL interface
 
 **Examples:**
-- `examples/quickstart.py` - Quick start demo
+- `bpd/examples/quickstart.py` - Quick start demo
 
 **Original Template:**
 - `CLAUDE.md` - Monorepo architecture guide

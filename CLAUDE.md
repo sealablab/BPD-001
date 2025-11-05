@@ -23,7 +23,8 @@ BPD-001/
 ├── bpd/                           # BPD Application (your work)
 │   ├── bpd-core/                  # Generic probe framework (Python)
 │   ├── bpd-drivers/               # Probe-specific drivers (Python)
-│   └── bpd-vhdl/                  # Vendor-agnostic VHDL interface
+│   ├── bpd-vhdl/                  # Vendor-agnostic VHDL interface
+│   └── examples/                  # Integration examples
 │
 ├── libs/                          # Upstream dependencies (git submodules)
 │   ├── moku-models/               # Moku platform specifications
@@ -32,9 +33,6 @@ BPD-001/
 │
 ├── tools/                         # Development tools (git submodules)
 │   └── forge-codegen/             # YAML → VHDL generator
-│
-├── examples/                      # Integration examples
-│   └── quickstart.py              # DS1120A basic usage
 │
 ├── llms.txt                       # Quick navigation (Tier 1)
 ├── CLAUDE.md                      # This file (Tier 2)
@@ -503,7 +501,7 @@ pytest --cov                   # With coverage
 - **This file** - BPD-001 architecture overview
 - **[llms.txt](llms.txt)** - Quick navigation guide
 - **[BPD-README.md](BPD-README.md)** - User-facing README
-- **[examples/](examples/)** - Integration examples
+- **[examples/](bpd/examples/)** - Integration examples
 
 ### Component Guides
 - **[bpd-core/CLAUDE.md](bpd/bpd-core/CLAUDE.md)** - Framework design
