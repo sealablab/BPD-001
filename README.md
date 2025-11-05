@@ -1,383 +1,500 @@
-# Moku Instrument Forge - Monorepo Template
+# BPD-001 - Basic Probe Driver
 
-**Composable Development Template for Moku Platform + Probe Integration**
+**Multi-Vendor Fault Injection Probe Integration for Moku Platform**
 
-This is a **template repository** for building custom instrument firmware on the **Moku platform** (Go/Lab/Pro/Delta) with integrated probe support. Features git submodule architecture, FPGA/VHDL code generation, and AI-navigable 3-tier documentation.
-
----
-
-## 🎯 What This Template Is For
-
-**Primary use case:** Adding custom probe support to Moku platforms
-
-- ✅ **Moku platform development** (Go/Lab/Pro/Delta FPGA instruments)
-- ✅ **Probe integration** (EMFI, laser, RF, or custom hardware probes)
-- ✅ **VHDL/FPGA code generation** (YAML → VHDL with 23-type system)
-- ✅ **Platform + probe safety validation** (voltage compatibility checking)
-
-**Reference implementation:** Moku + Riscure DS1120A EMFI probe
-
-**NOT for:** Non-Moku FPGA platforms (Red Pitaya, PicoScope, etc.) - This template is Moku-specific.
-
-**Status:** Template-Ready ✅
-**Version:** `v2.0.0` (2025-11-04)
-**Architecture:** Clean separation - tools, libraries, AI agents
-**Template Features:** 3-tier docs, composable submodules, LLM-optimized
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/sealablab/BPD-001/releases/tag/v0.1.0)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## 🚀 Using This Template
+## 🎯 What is BPD-001?
 
-### Quick Start
+**BPD-001** is a comprehensive probe driver framework for integrating fault injection probes with Moku FPGA platforms. It provides a **vendor-agnostic architecture** that enables you to write probe drivers once and use them across multiple probe types (EMFI, laser FI, RF injection, voltage glitching).
 
-**Step 1: Create from Template**
+### Key Features
+
+- 🔌 **Generic Probe Interface** - Protocol-based Python framework works with any FI probe
+- 🔒 **Voltage Safety Validation** - Automatic compatibility checking before physical wiring
+- 🎛️ **VHDL State Machine** - Vendor-agnostic FPGA interface with safety interlocks
+- 📦 **Driver Discovery** - Auto-registration system for easy probe switching
+- 🧪 **Simulation Mode** - Test drivers without physical hardware
+- 📚 **AI-Navigable Docs** - 3-tier documentation optimized for AI assistants
+
+### Current Status
+
+- ✅ **v0.1.0 Released** - DS1120A EMFI reference implementation complete
+- ✅ Complete 3-tier documentation system
+- ✅ Python framework (bpd-core) production-ready
+- ✅ VHDL interface with CocoTB tests
+- 🚧 Additional probe drivers planned (laser FI, RF, voltage glitch)
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.9+
+- [uv](https://github.com/astral-sh/uv) package manager
+- Git with submodule support
+- Moku platform (Go/Lab/Pro/Delta) for hardware deployment
+
+### Installation
+
 ```bash
-# Click "Use this template" button on GitHub to create your repository
-# Then clone YOUR new repository WITH SUBMODULES:
-git clone --recurse-submodules https://github.com/YOUR-USERNAME/your-moku-project.git
-cd your-moku-project
-
-# If you forgot --recurse-submodules, initialize them now:
-git submodule update --init --recursive
+# Clone repository with submodules
+git clone --recurse-submodules https://github.com/sealablab/BPD-001.git
+cd BPD-001
 
 # Install dependencies
 uv sync
 
-# Verify setup works
-python -c "from moku_models import MOKU_GO_PLATFORM; print('✅ Template ready!')"
-python -c "from riscure_models import DS1120A_PLATFORM; print('✅ Imports working!')"
-
-# If imports fail, manually install workspace members:
-# uv pip install -e libs/moku-models/ -e libs/riscure-models/
+# Install BPD packages
+cd bpd/bpd-core && uv pip install -e . && cd ../..
+cd bpd/bpd-drivers && uv pip install -e . && cd ../..
+cd bpd/bpd-vhdl && uv pip install -e . && cd ../..
 ```
 
-**⚠️ Common Issue:** If you see `ModuleNotFoundError`, you likely forgot to initialize submodules. Run:
-```bash
-git submodule update --init --recursive
-uv pip install -e libs/moku-models/ -e libs/riscure-models/
-```
+### Verify Installation
 
-**Step 2: Customize for Your Probes**
+```python
+# Test imports
+from bpd_drivers import DS1120ADriver
+from bpd_core import validate_probe_moku_compatibility
+from moku_models import MOKU_GO_PLATFORM
 
-Run the customization command in Claude Code:
+print("✅ BPD-001 ready!")
 ```
-/customize-monorepo
-```
-
-Or follow the manual guide: **[CLAUDE.md](CLAUDE.md)**
 
 ---
 
-## 📝 Customization Overview
+## 📖 Usage Example
 
-### Most Common: Adding Your Probe Models
+### DS1120A EMFI Probe
 
-**Typical workflow:**
-1. ✅ **Keep** `libs/moku-models/` (core platform - required!)
-2. ✅ **Keep** `libs/riscure-models/` (reference example - recommended)
-3. ✅ **Keep** VHDL tools (`tools/forge-codegen/`, `libs/forge-vhdl/`)
-4. ➕ **Add** `libs/YOUR-probe-models/` (your custom probe specs)
-5. 📝 **Update** documentation to reflect your probes
+```python
+from bpd_drivers import DS1120ADriver
+from bpd_core import validate_probe_moku_compatibility
+from moku_models import MOKU_GO_PLATFORM
 
-**Example: Adding laser probe support**
-```bash
-# Create your probe models repository (use riscure-models as template)
-git submodule add https://github.com/YOUR-USERNAME/laser-models.git libs/laser-models/
-# Update pyproject.toml workspace members
-# Update documentation
-uv sync
+# Initialize driver
+driver = DS1120ADriver()
+driver.initialize()
+
+# Validate voltage safety with Moku Go
+validate_probe_moku_compatibility(driver, MOKU_GO_PLATFORM)
+print("✅ Safe to connect Moku OUT1 → DS1120A digital_glitch")
+
+# Configure probe
+driver.set_voltage(3.3)  # TTL trigger threshold
+driver.set_pulse_width(50)  # Fixed at 50ns for DS1120A
+
+# Execute fault injection
+driver.arm()
+print(f"Status: {driver.get_status()}")
+driver.trigger()
+driver.disarm()
+
+# Shutdown cleanly
+driver.shutdown()
 ```
 
-### Less Common Scenarios
+### Output
 
-**Python-only (no VHDL/FPGA):**
-- Keep: `libs/moku-models/` + your probe models
-- Remove: `tools/forge-codegen/`, `libs/forge-vhdl/`
-- Note: Unusual for Moku development (most work involves FPGA)
-
-**Extending Moku platform models:**
-- Fork `libs/moku-models/` to add custom platforms
-- Update `.gitmodules` to point to your fork
-
-### Detailed Guides
-
-- **AI-Assisted:** Run `/customize-monorepo` in Claude Code
-- **Complete Architecture:** [CLAUDE.md](CLAUDE.md)
-- **Programmatic Structure:** [.claude/manifest.json](.claude/manifest.json)
+```
+[SIM] DS1120A in simulation mode
+✅ Safe to connect Moku OUT1 → DS1120A digital_glitch
+Status: ProbeStatus(ready=False, busy=False, armed=True, fault=False)
+[SIM] DS1120A pulse: 3.3V, 50ns
+```
 
 ---
 
-## Template Structure
+## 🏗️ Architecture
 
-This template uses git submodules organized in a flat, clean hierarchy:
+BPD-001 uses a **three-layer architecture** for maximum flexibility:
 
-### Core Components
+### 1. Python Framework (`bpd-core`)
 
-#### `libs/moku-models/` - **Platform Specifications (REQUIRED)**
-> Pydantic models for Moku platforms: Go, Lab, Pro, Delta
->
-> **Purpose:** Hardware specs, deployment configs, signal routing
-> **Status:** ✅ Production-ready - All 4 platforms supported
-> **Docs:** [llms.txt](libs/moku-models/llms.txt) | [CLAUDE.md](libs/moku-models/CLAUDE.md)
+Generic probe driver framework with protocol-based interface:
 
-This is the **foundation** - required for all Moku development.
+- `FIProbeInterface` - Protocol all drivers implement
+- `ProbeCapabilities` - Hardware specification dataclass
+- `ProbeRegistry` - Auto-discovery system
+- `validate_probe_moku_compatibility()` - Safety validation
 
-#### `libs/riscure-models/` - **Example Probe Specifications**
-> Pydantic models for Riscure EMFI probes: DS1120A, DS1140A
->
-> **Purpose:** Reference implementation for probe integration
-> **Use as:** Template for creating your own probe models
-> **Docs:** [llms.txt](libs/riscure-models/llms.txt) | [CLAUDE.md](libs/riscure-models/CLAUDE.md)
+**[Documentation →](bpd/bpd-core/)**
 
-Shows voltage safety validation, port specifications, and documentation patterns.
+### 2. Python Drivers (`bpd-drivers`)
 
-### VHDL Development Tools
+Probe-specific implementations:
 
-#### `tools/forge-codegen/` - **Code Generator**
-> YAML → VHDL code generator with 23-type system and register packing
->
-> **Purpose:** Generate type-safe VHDL from high-level specifications
-> **Status:** ✅ Production-ready - 69 tests passing
-> **Docs:** [llms.txt](tools/forge-codegen/llms.txt) | [CLAUDE.md](tools/forge-codegen/CLAUDE.md)
+- **DS1120A** - Riscure EMFI probe (reference implementation) ✅
+- **Laser FI** - Optical fault injection (planned) 🚧
+- **RF Injection** - Radio frequency FI (planned) 🚧
+- **Voltage Glitch** - Power supply glitching (planned) 🚧
 
-#### `libs/forge-vhdl/` - **VHDL Component Library**
-> Reusable VHDL utilities: voltage conversion, clock dividers, FSM observer
->
-> **Purpose:** Common VHDL building blocks for instrument firmware
-> **Status:** ✅ Production-ready - CocoTB tested
-> **Docs:** [llms.txt](libs/forge-vhdl/llms.txt) | [CLAUDE.md](libs/forge-vhdl/CLAUDE.md)
+**[Documentation →](bpd/bpd-drivers/)**
 
-### AI Agent System
+### 3. VHDL Interface (`bpd-vhdl`)
 
-#### `.claude/` - **AI Development Assistance**
-> Slash commands and agents for monorepo orchestration
->
-> **Key command:** `/customize-monorepo` - Interactive template customization
-> **Agents:** Deployment orchestration, hardware debugging
+Vendor-agnostic FPGA control with FSM:
+
+```
+IDLE → ARMED → PULSE_ACTIVE → COOLDOWN → IDLE/ARMED
+```
+
+Features:
+- Configurable pulse timing and voltage control
+- Safety interlocks (cooldown enforcement, fault detection)
+- Works with EMFI, laser, RF, voltage glitch probes
+
+**[Documentation →](bpd/bpd-vhdl/)**
+
+### Data Flow
+
+```
+┌──────────────┐
+│ Python Driver│ ← validate → moku-models (platform specs)
+└──────┬───────┘ ← validate → riscure-models (probe specs)
+       │
+       ↓
+┌──────────────┐
+│  Moku API    │ → Control Registers
+└──────┬───────┘
+       │
+       ↓
+┌──────────────┐
+│  VHDL FSM    │ → probe_trigger, probe_voltage
+└──────┬───────┘
+       │
+       ↓
+┌──────────────┐
+│Physical Probe│ → Target DUT
+└──────────────┘
+```
 
 ---
 
-## Directory Layout
+## 📦 Project Structure
 
 ```
-moku-instrument-forge-mono-repo/
+BPD-001/
+├── bpd/                      # BPD Application
+│   ├── bpd-core/             # Generic probe framework (Python)
+│   │   ├── src/bpd_core/
+│   │   ├── tests/
+│   │   ├── llms.txt          # Quick reference
+│   │   └── CLAUDE.md         # Architecture guide
+│   │
+│   ├── bpd-drivers/          # Probe-specific drivers (Python)
+│   │   ├── src/bpd_drivers/
+│   │   │   └── ds1120a.py    # DS1120A driver
+│   │   ├── tests/
+│   │   ├── llms.txt
+│   │   └── CLAUDE.md
+│   │
+│   └── bpd-vhdl/             # VHDL probe interface
+│       ├── src/
+│       │   └── fi_probe_interface.vhd
+│       ├── tests/
+│       ├── llms.txt
+│       └── CLAUDE.md
 │
-├── tools/                              # Development tools
-│   └── forge-codegen/                  # Submodule: YAML → VHDL generator
-│       ├── forge_codegen/
-│       │   ├── basic_serialized_datatypes/  # Type system (internal)
-│       │   ├── generator/              # Code generation engine
-│       │   ├── models/                 # Pydantic models
-│       │   ├── templates/              # Jinja2 VHDL templates
-│       │   └── vhdl/                   # Frozen type packages
-│       ├── tests/                      # 69 tests
-│       └── docs/                       # High-quality documentation
+├── libs/                     # Upstream Dependencies (git submodules)
+│   ├── moku-models/          # Moku platform specifications
+│   ├── riscure-models/       # DS1120A probe specs
+│   ├── forge-vhdl/           # VHDL utilities
+│   └── forge-codegen/        # YAML → VHDL generator
 │
-├── libs/                               # Foundational libraries
-│   ├── forge-vhdl/                     # Submodule: VHDL utilities
-│   ├── moku-models/                    # Submodule: Platform specs
-│   ├── riscure-models/                 # Submodule: Probe specs
-│   └── platform/                       # Platform-specific VHDL
+├── examples/
+│   └── quickstart.py         # DS1120A basic usage
 │
-├── .claude/                            # AI agent configurations
-│   ├── agents/                         # Specialized agents
-│   ├── commands/                       # Slash commands
-│   ├── workflows/                      # Reusable workflows
-│   └── shared/                         # Architecture docs
-│
-├── docs/                               # Monorepo documentation
-├── scripts/                            # Helper scripts
-└── pyproject.toml                      # Python workspace config
+├── llms.txt                  # Root navigation
+├── CLAUDE.md                 # Project overview
+├── BPD-README.md             # Development guide
+└── README.md                 # This file
 ```
-
-**Architecture v2.0:** Clean separation
-- **tools/** - Code generation (forge-codegen)
-- **libs/** - Foundational libraries (flat, no nesting)
 
 ---
 
-## Quick Start
+## 🔧 Development
 
-### Clone with Submodules
+### Adding a New Probe Type
+
+**Example: Laser FI probe**
+
+1. **Create driver** implementing `FIProbeInterface`:
+
+```python
+# bpd/bpd-drivers/src/bpd_drivers/laser_fi.py
+
+from bpd_core import FIProbeInterface, ProbeCapabilities, register_driver
+
+@register_driver("laser_fi")
+class LaserFIDriver:
+    @property
+    def capabilities(self) -> ProbeCapabilities:
+        return ProbeCapabilities(
+            min_voltage_v=0.0,
+            max_voltage_v=5.0,
+            min_pulse_width_ns=1,
+            max_pulse_width_ns=1000,
+            pulse_width_resolution_ns=1,
+            supports_external_trigger=True,
+            supports_internal_trigger=True,
+        )
+
+    def initialize(self) -> None:
+        # Initialize laser hardware
+        pass
+
+    # ... implement other FIProbeInterface methods
+```
+
+2. **Export in `__init__.py`**:
+
+```python
+from bpd_drivers.laser_fi import LaserFIDriver
+
+__all__ = ["DS1120ADriver", "LaserFIDriver"]
+```
+
+3. **Use same VHDL interface** (adjust generics for timing):
+
+```vhdl
+probe_ctrl : entity work.fi_probe_interface
+    generic map (
+        PULSE_WIDTH_BITS => 16,
+        VOLTAGE_BITS => 16,
+        COOLDOWN_CYCLES => 10  -- Faster cooldown for laser
+    )
+    port map (
+        -- Same interface as DS1120A!
+    );
+```
+
+**[Complete Guide → bpd/bpd-drivers/CLAUDE.md](bpd/bpd-drivers/CLAUDE.md)**
+
+### Running Tests
 
 ```bash
-git clone --recurse-submodules https://github.com/sealablab/moku-instrument-forge-mono-repo.git
-cd moku-instrument-forge-mono-repo
-```
+# Python tests
+pytest bpd/bpd-core/tests/
+pytest bpd/bpd-drivers/tests/
 
-Already cloned? Initialize all submodules:
+# VHDL tests (CocoTB)
+cd bpd/bpd-vhdl/tests
+pytest test_fi_interface.py
 
-```bash
-git submodule update --init --recursive
-```
-
-Verify all submodules are properly initialized:
-
-```bash
-git submodule status --recursive
-```
-
-Expected output:
-```
- <commit-hash> libs/forge-vhdl (tag)
- <commit-hash> libs/moku-models (tag)
- <commit-hash> libs/riscure-models (tag)
- <commit-hash> tools/forge-codegen (tag)
-```
-
-### Setup Python Environment
-
-This template uses **uv workspace mode** - the root is a pure workspace container.
-
-```bash
-# Install dependencies
-uv sync
-
-# Verify imports work
-python -c "from moku_models import MOKU_GO_PLATFORM; print('✅ Setup complete')"
-
-# Run tests across all workspace members
+# All tests
 pytest
+
+# Skip hardware tests (no physical probe required)
+pytest -m "not hardware"
 ```
 
-**About workspace mode:**
-- Root `pyproject.toml` declares workspace members (your submodules)
-- No build system at root - each submodule has its own
-- Shared dependencies defined at root, available to all members
-- Cross-submodule imports work seamlessly
-- When you add/remove submodules, update `[tool.uv.workspace]` members list
+### Building Documentation
+
+Documentation uses a **3-tier system** optimized for AI navigation:
+
+- **Tier 1 (llms.txt):** Quick reference (~500-1000 tokens)
+- **Tier 2 (CLAUDE.md):** Architecture guide (~3-5k tokens)
+- **Tier 3 (Source):** Implementation details
+
+Each component has its own llms.txt and CLAUDE.md for progressive disclosure.
 
 ---
 
-## Documentation
+## 🧪 Hardware Integration
 
-Each submodule follows a **3-tier documentation system** optimized for AI navigation:
+### VHDL Integration Example
+
+```vhdl
+architecture rtl of emfi_instrument is
+    signal arm_reg : std_logic;
+    signal trigger_reg : std_logic;
+    signal pulse_width_reg : unsigned(15 downto 0);
+    signal voltage_reg : unsigned(15 downto 0);
+begin
+    probe_ctrl : entity work.fi_probe_interface
+        generic map (
+            PULSE_WIDTH_BITS => 16,
+            VOLTAGE_BITS => 16,
+            COOLDOWN_CYCLES => 125  -- 1μs @ 125MHz
+        )
+        port map (
+            clk => clk_125mhz,
+            rst_n => rst_n,
+            trigger_in => trigger_reg,
+            arm => arm_reg,
+            pulse_width => pulse_width_reg,
+            voltage_ctrl => voltage_reg,
+            probe_trigger => OUT1,  -- To probe hardware
+            ready => status_ready,
+            busy => status_busy,
+            fault => status_fault
+        );
+end architecture;
+```
+
+### Python Control Flow
+
+```python
+from moku import MokuGo
+
+# Deploy bitstream with BPD VHDL
+moku = MokuGo(ip="192.168.1.1")
+moku.deploy_instrument("emfi_instrument.tar")
+
+# Configure via registers
+moku.set_control_register(0, pulse_width_ns)
+moku.set_control_register(1, voltage_digital)
+
+# Arm
+moku.set_control_register(2, 1)
+
+# Trigger
+moku.set_control_register(3, 1)
+moku.set_control_register(3, 0)
+
+# Check status
+ready = moku.get_status_register(0)
+busy = moku.get_status_register(1)
+fault = moku.get_status_register(2)
+```
+
+---
+
+## 📚 Documentation
+
+### Quick Navigation
 
 | Component | Purpose | Quick Ref | Full Guide |
 |-----------|---------|-----------|------------|
-| `tools/forge-codegen/` | YAML → VHDL generator | [llms.txt](tools/forge-codegen/llms.txt) | [CLAUDE.md](tools/forge-codegen/CLAUDE.md) |
-| `libs/moku-models/` | Platform specs (CORE) | [llms.txt](libs/moku-models/llms.txt) | [CLAUDE.md](libs/moku-models/CLAUDE.md) |
-| `libs/riscure-models/` | Probe specs (example) | [llms.txt](libs/riscure-models/llms.txt) | [CLAUDE.md](libs/riscure-models/CLAUDE.md) |
-| `libs/forge-vhdl/` | VHDL utilities | [llms.txt](libs/forge-vhdl/llms.txt) | [CLAUDE.md](libs/forge-vhdl/CLAUDE.md) |
+| **bpd-core** | Generic framework | [llms.txt](bpd/bpd-core/llms.txt) | [CLAUDE.md](bpd/bpd-core/CLAUDE.md) |
+| **bpd-drivers** | Probe drivers | [llms.txt](bpd/bpd-drivers/llms.txt) | [CLAUDE.md](bpd/bpd-drivers/CLAUDE.md) |
+| **bpd-vhdl** | VHDL interface | [llms.txt](bpd/bpd-vhdl/llms.txt) | [CLAUDE.md](bpd/bpd-vhdl/CLAUDE.md) |
+| **Root** | Project overview | [llms.txt](llms.txt) | [CLAUDE.md](CLAUDE.md) |
 
-**Progressive disclosure strategy:**
-- **Tier 1 (llms.txt):** Quick reference (~500-1000 tokens) - Load first
-- **Tier 2 (CLAUDE.md):** Complete guide (~3-5k tokens) - Load when designing
-- **Tier 3 (source code):** Implementation details - Load when coding
+### User Guides
 
-**For your custom probe models:** Follow the same pattern! Use `libs/riscure-models/` as a template.
+- **[BPD-README.md](BPD-README.md)** - Complete development guide
+- **[examples/quickstart.py](examples/quickstart.py)** - Working example
 
----
+### For AI Assistants
 
-## Architecture
+This project uses a **3-tier documentation pattern** optimized for context-efficient AI navigation:
 
-**Version 2.0 - Clean Separation**
+1. Load `llms.txt` first (quick facts, ~1k tokens)
+2. Load `CLAUDE.md` for design questions (~5k tokens)
+3. Read source code only when implementing
 
-This template uses a flat, modular architecture:
-
-```
-your-moku-project/
-├── tools/              # Code generation tools
-│   └── forge-codegen/  # YAML → VHDL generator
-├── libs/               # Foundational libraries (flat, no nesting)
-│   ├── moku-models/    # Platform specs (REQUIRED)
-│   ├── riscure-models/ # Probe specs (example)
-│   ├── forge-vhdl/     # VHDL utilities
-│   └── YOUR-models/    # Your custom probe models (add here)
-├── .claude/            # AI agents and commands
-├── docs/               # Your project documentation
-└── pyproject.toml      # Workspace configuration
-```
-
-**Key principles:**
-- **Clean separation:** tools/ vs libs/ (no nested submodules)
-- **Islands of authority:** Each submodule is authoritative for its domain
-- **Self-contained modules:** Each works standalone, independently versioned
-- **3-tier documentation:** llms.txt → CLAUDE.md → source
-
-See [CLAUDE.md](CLAUDE.md) for complete architecture details.
+Start with **[llms.txt](llms.txt)** for component catalog.
 
 ---
 
-## Development Workflow
+## 🗺️ Roadmap
 
-### Using forge-codegen
+### v0.1.0 (Current) ✅
+
+- [x] BPD Core framework
+- [x] DS1120A EMFI driver (reference)
+- [x] Generic VHDL interface with FSM
+- [x] Voltage safety validation
+- [x] CocoTB test suite
+- [x] Complete 3-tier documentation
+
+### v0.2.0 (Next)
+
+- [ ] Laser FI probe driver
+- [ ] Example Moku instrument using BPD
+- [ ] Hardware testing with physical DS1120A
+- [ ] Extended VHDL test coverage
+- [ ] Performance benchmarking
+
+### v0.3.0 (Future)
+
+- [ ] RF injection probe driver
+- [ ] Voltage glitching probe driver
+- [ ] Multi-probe coordination
+- [ ] Advanced triggering patterns (burst, sweep)
+- [ ] Real-time feedback integration
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! BPD-001 is under active development.
+
+### Areas Needing Help
+
+- 🔧 Additional probe drivers (laser FI, RF, voltage glitch)
+- 📝 Documentation improvements
+- 🧪 VHDL test coverage expansion
+- 🎯 Example Moku instruments
+
+### Development Setup
 
 ```bash
-# Generate VHDL from YAML spec
-python -m forge_codegen.generator.codegen your-spec.yaml --output-dir generated/
+# Fork and clone
+git clone --recurse-submodules https://github.com/YOUR-USERNAME/BPD-001.git
+cd BPD-001
 
-# See tools/forge-codegen/ for complete documentation
-```
-
-### Managing Submodules
-
-```bash
-# Update a submodule to latest version
-cd libs/your-custom-probe-models/
-git pull origin main
-cd ../..
-git add libs/your-custom-probe-models/
-git commit -m "chore: Update probe models"
-
-# Update workspace after adding/removing submodules
-# Edit pyproject.toml [tool.uv.workspace] members, then:
+# Install in editable mode
 uv sync
+cd bpd/bpd-core && uv pip install -e . && cd ../..
+cd bpd/bpd-drivers && uv pip install -e . && cd ../..
+
+# Make changes
+# ...
+
+# Run tests
+pytest
+
+# Submit PR
 ```
 
-### Testing
+### Coding Standards
 
-```bash
-pytest              # All tests
-pytest libs/        # Library tests only
-pytest tools/       # Tool tests
-pytest -n auto      # Parallel execution
-```
-
-Configuration in `pyproject.toml`.
+- Follow existing code style (black + ruff)
+- Write tests for new features
+- Update documentation (llms.txt + CLAUDE.md)
+- Use type hints
 
 ---
 
-## Architecture Documentation
+## 📜 License
 
-- **Complete Guide:** [CLAUDE.md](CLAUDE.md) - Full architecture, integration patterns
-- **AI Navigation:** [llms.txt](llms.txt) - Quick component catalog
-- **Customization:** Run `/customize-monorepo` in Claude Code
-- **Programmatic:** [.claude/manifest.json](.claude/manifest.json) - Machine-readable structure
+MIT License - see [LICENSE](LICENSE) file
 
 ---
 
-## Contributing
+## 🙏 Acknowledgments
 
-This is a **template repository**. When you use it:
-
-1. **Create your own repository** from this template (click "Use this template")
-2. **Make it yours** - customize for your specific Moku + probe integration
-3. **Share your improvements** - If you create generally useful patterns, consider:
-   - Documenting them for others
-   - Contributing back enhancements to the template structure
-   - Sharing your custom probe models (if not proprietary)
-
-**For submodule development:**
-1. Make changes in appropriate submodule repository
-2. Write CocoTB tests for VHDL changes
-3. Validate with `pytest`
-4. Commit to submodule, then update monorepo reference
-5. Run `uv sync` after workspace changes
+- Built using [Moku Instrument Forge template](https://github.com/sealablab/moku-instrument-forge-mono-repo) v2.0
+- DS1120A specifications from [riscure-models](https://github.com/sealablab/riscure-models)
+- Moku platform support via [moku-models](https://github.com/sealablab/moku-models)
+- VHDL utilities from [forge-vhdl](https://github.com/sealablab/moku-instrument-forge-vhdl)
 
 ---
 
-## License
+## 📞 Support
 
-MIT License - See [LICENSE](LICENSE)
+- **Issues:** [GitHub Issues](https://github.com/sealablab/BPD-001/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/sealablab/BPD-001/discussions)
+- **Documentation:** Start with [llms.txt](llms.txt) or [CLAUDE.md](CLAUDE.md)
 
 ---
 
-## Resources
+## 🔗 Related Projects
 
-**Template Repository:** Fork this to create your own Moku development environment
-**Documentation:** [CLAUDE.md](CLAUDE.md) - Complete architecture guide
-**AI Assistance:** Run `/customize-monorepo` in Claude Code
-**Issues/Questions:** Use GitHub Issues in your forked repository
+- [moku-models](https://github.com/sealablab/moku-models) - Moku platform specifications
+- [riscure-models](https://github.com/sealablab/riscure-models) - Riscure probe specifications
+- [forge-vhdl](https://github.com/sealablab/moku-instrument-forge-vhdl) - VHDL component library
+- [forge-codegen](https://github.com/sealablab/moku-instrument-forge-codegen) - YAML → VHDL generator
 
-**Happy Moku development! 🚀**
+---
+
+**Built for researchers, by researchers** 🔬 | **MIT License** | **v0.1.0**
