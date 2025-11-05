@@ -16,14 +16,22 @@
 
 ## Repository Structure
 
-### Core Platform (git submodules)
+### BPD Application (This Project)
+
+| Component | Purpose | Quick Ref |
+|-----------|---------|-----------|
+| [bpd-core](bpd/bpd-core/) | Generic probe driver framework (Python) | [llms.txt](bpd/bpd-core/llms.txt) |
+| [bpd-drivers](bpd/bpd-drivers/) | Probe-specific drivers (DS1120A + planned) | [llms.txt](bpd/bpd-drivers/llms.txt) |
+| [bpd-vhdl](bpd/bpd-vhdl/) | Vendor-agnostic VHDL probe interface | [llms.txt](bpd/bpd-vhdl/llms.txt) |
+
+### Core Platform (git submodules - upstream dependencies)
 
 | Component | Purpose | Quick Ref |
 |-----------|---------|-----------|
 | [moku-models](libs/moku-models/) | **REQUIRED** - Moku platform specifications (Go/Lab/Pro/Delta) | [llms.txt](libs/moku-models/llms.txt) |
-| [riscure-models](libs/riscure-models/) | Example probe specs (DS1120A EMFI) - Use as template | [llms.txt](libs/riscure-models/llms.txt) |
+| [riscure-models](libs/riscure-models/) | DS1120A probe specs (reference) | [llms.txt](libs/riscure-models/llms.txt) |
 
-### VHDL Development Tools (git submodules)
+### VHDL Development Tools (git submodules - upstream dependencies)
 
 | Component | Purpose | Quick Ref |
 |-----------|---------|-----------|
@@ -45,28 +53,52 @@
 
 ## Common Workflows
 
-### Type System Lookup
+### BPD Development Workflows
+
+#### Create New Probe Driver
+**Task:** "Add laser FI probe support"
+**→ Read:** [bpd/bpd-drivers/llms.txt](bpd/bpd-drivers/llms.txt)
+**→ Deep dive:** [bpd/bpd-drivers/CLAUDE.md](bpd/bpd-drivers/CLAUDE.md)
+
+#### Validate Probe with Moku
+**Task:** "Check if probe voltage compatible with Moku Go"
+**→ Read:** [bpd/bpd-core/llms.txt](bpd/bpd-core/llms.txt)
+**→ Function:** `validate_probe_moku_compatibility()`
+
+#### Integrate VHDL Interface
+**Task:** "Add FI probe control to Moku instrument"
+**→ Read:** [bpd/bpd-vhdl/llms.txt](bpd/bpd-vhdl/llms.txt)
+**→ Component:** `fi_probe_interface.vhd`
+
+#### Configure DS1120A Driver
+**Task:** "Setup DS1120A EMFI probe"
+**→ Read:** [bpd/bpd-drivers/llms.txt](bpd/bpd-drivers/llms.txt)
+**→ Example:** DS1120A basic usage
+
+### Upstream Library Workflows
+
+#### Type System Lookup
 **Task:** "What voltage types are available?"
 **→ Read:** [tools/forge-codegen/llms.txt](tools/forge-codegen/llms.txt) (section: "Basic Usage" → Type System)
 
-### Platform Specs Lookup
+#### Platform Specs Lookup
 **Task:** "What's Moku:Go clock frequency?"
 **→ Read:** [libs/moku-models/llms.txt](libs/moku-models/llms.txt)
 
-### Code Generation
+#### Code Generation
 **Task:** "Generate VHDL from YAML spec"
 **→ Read:** [tools/forge-codegen/llms.txt](tools/forge-codegen/llms.txt)
 **→ Entry point:** `python -m forge_codegen.generator.codegen spec.yaml`
 
-### VHDL Component Usage
+#### VHDL Component Usage
 **Task:** "Use clock divider or voltage packages"
 **→ Read:** [libs/forge-vhdl/llms.txt](libs/forge-vhdl/llms.txt)
 
-### Platform Validation
+#### Platform Validation
 **Task:** "Validate deployment config"
 **→ Read:** [libs/moku-models/llms.txt](libs/moku-models/llms.txt)
 
-### Voltage Safety Checking
+#### Voltage Safety Checking
 **Task:** "Validate probe wiring compatibility"
 **→ Read:** [libs/moku-models/llms.txt](libs/moku-models/llms.txt) + [libs/riscure-models/llms.txt](libs/riscure-models/llms.txt)
 
@@ -77,22 +109,32 @@
 **Purpose:** Essential facts, API surface, common tasks
 **When:** Every interaction - minimal token cost (~500-1000 tokens each)
 
-**Load these first:**
-- tools/forge-codegen/llms.txt
-- libs/forge-vhdl/llms.txt
-- libs/moku-models/llms.txt
-- libs/riscure-models/llms.txt
+**BPD Components (load first for BPD development):**
+- bpd/bpd-core/llms.txt - Generic probe framework
+- bpd/bpd-drivers/llms.txt - Probe-specific drivers
+- bpd/bpd-vhdl/llms.txt - VHDL probe interface
+
+**Upstream Libraries (load as needed):**
+- tools/forge-codegen/llms.txt - YAML → VHDL generation
+- libs/forge-vhdl/llms.txt - VHDL utilities
+- libs/moku-models/llms.txt - Moku platform specs
+- libs/riscure-models/llms.txt - DS1120A probe specs
 
 ### Tier 2: Deep Context (Load when designing/integrating)
 **Files:** CLAUDE.md files (~3-5k tokens each)
 **Purpose:** Design rationale, integration patterns, development workflows
 **When:** Designing new features, understanding architecture
 
-**Load when needed:**
-- tools/forge-codegen/CLAUDE.md (code generation internals)
-- libs/forge-vhdl/CLAUDE.md (VHDL design patterns, testing standards)
-- libs/moku-models/CLAUDE.md (platform integration)
-- libs/riscure-models/CLAUDE.md (probe specifications)
+**BPD Deep Dives:**
+- bpd/bpd-core/CLAUDE.md - Framework architecture, protocol design
+- bpd/bpd-drivers/CLAUDE.md - Driver development guide, DS1120A reference
+- bpd/bpd-vhdl/CLAUDE.md - FSM design, timing, multi-probe support
+
+**Upstream Deep Dives:**
+- tools/forge-codegen/CLAUDE.md - Code generation internals
+- libs/forge-vhdl/CLAUDE.md - VHDL design patterns, testing standards
+- libs/moku-models/CLAUDE.md - Platform integration
+- libs/riscure-models/CLAUDE.md - Probe specifications
 
 ### Tier 3: Implementation (Load when modifying code)
 **Files:** Agent prompts, source code, tests, specialized docs
