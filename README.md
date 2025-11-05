@@ -1,5 +1,5 @@
 # BPD-001 - Basic Probe Driver
-
+<!-- NOTE: This comment was handplaced by Johnny so you know a human has looked at this, not just machines 🐬🧜 -->
 **Multi-Vendor Fault Injection Probe Integration for Moku Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
