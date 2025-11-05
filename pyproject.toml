@@ -38,10 +38,15 @@ dev = [
 # Declare submodules as workspace members
 # uv will manage these as a unified dependency graph
 members = [
+    # Upstream submodules (foundational libraries and tools)
     "libs/forge-vhdl",
     "libs/moku-models",
     "libs/riscure-models",
     "tools/forge-codegen",
+    # BPD development workspace members
+    "bpd/bpd-core",
+    "bpd/bpd-drivers",
+    "bpd/bpd-vhdl",
 ]
 
 # ============================================================================
@@ -61,6 +66,9 @@ testpaths = [
     "libs/moku-models/tests",
     "libs/riscure-models/tests",
     "tools/forge-codegen/tests",
+    "bpd/bpd-core/tests",
+    "bpd/bpd-drivers/tests",
+    "bpd/bpd-vhdl/tests",
 ]
 norecursedirs = [".venv", "sim_build", "__pycache__", ".git"]
 addopts = "-v --tb=short"
