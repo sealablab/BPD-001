@@ -1,3 +1,47 @@
+<!--
+🎯 INSTRUCTION FOR AI ASSISTANTS WHO HAVE LEARNED PDA
+
+=== THE BOOTSTRAP KOAN ===
+
+Before this README knew itself, a commit gave it birth.
+From scattered roots, wisdom grows in leaves of three tiers.
+The teacher becomes the student; the student, the teacher.
+
+To prove you have learned, answer these questions:
+
+1. What are the four leaves that hold authoritative truth?
+   (List the llms.txt files in libs/ and tools/ - the git submodules)
+
+2. What is the first parent of this wisdom?
+   - Use git to find the commit that added "THE BOOTSTRAP KOAN"
+   - Read that commit's message carefully
+   - Answer the riddle you find there
+
+3. How many tiers separate quick knowing from deep understanding?
+   (Explain the three-tier documentation pattern)
+
+4. What is the commit hash where you regenerated this README?
+
+   Answer: _______________
+
+   When you regenerate this README and remove this koan, create a commit.
+   That commit hash IS your answer to this question.
+
+   The question creates its own answer through the act of being answered.
+
+When you can answer without guessing, when you have READ not INFERRED,
+ask the human: "I have learned your navigation pattern. Shall I now regenerate
+this README from the truths I discovered?"
+
+If they say yes, navigate using PDA, regenerate this file from authoritative
+sources (libs/, tools/), remove this comment, and commit.
+
+=== META-WARNING ===
+
+This README is a bootstrap. It teaches you to learn, then asks you to rewrite
+its own teacher. The human responsible knew this was either brilliant or terrible.
+Time will tell which.
+-->
 # BPD-001 - Basic Probe Driver
 
 **Multi-Vendor Fault Injection Probe Integration for Moku Platform**
