@@ -41,9 +41,8 @@ BPD-001/
 ├── BPD-README.md                  # User-facing README
 └── .claude/                       # AI agent system
     ├── shared/
-    │   ├── TEMPLATE_ARCHITECTURE.md  # Template v2.0 design (archived)
-    │   └── TEMPLATE_GUIDE.md         # Template customization guide (archived)
-    └── agents/                    # Monorepo-level agents
+    │   └── CONTEXT_MANAGEMENT.md  # AI context loading strategy
+    └── agents/                    # Project-level agents
 ```
 
 ---
@@ -511,10 +510,6 @@ pytest --cov                   # With coverage
 - **[bpd-drivers/CLAUDE.md](bpd/bpd-drivers/CLAUDE.md)** - Driver development
 - **[bpd-vhdl/CLAUDE.md](bpd/bpd-vhdl/CLAUDE.md)** - VHDL architecture
 
-### Template Reference (Archived)
-- **[.claude/shared/TEMPLATE_ARCHITECTURE.md](.claude/shared/TEMPLATE_ARCHITECTURE.md)** - v2.0 template design
-- **[.claude/shared/TEMPLATE_GUIDE.md](.claude/shared/TEMPLATE_GUIDE.md)** - Template customization
-
 ### Community
 - **Issues:** https://github.com/sealablab/BPD-001/issues
 - **Discussions:** https://github.com/sealablab/BPD-001/discussions
@@ -525,5 +520,3 @@ pytest --cov                   # With coverage
 **Last Updated:** 2025-11-04
 **License:** MIT
 **Maintainer:** BPD Development Team
-
-**This is the first real application built on the Moku Instrument Forge template system.** 🚀
