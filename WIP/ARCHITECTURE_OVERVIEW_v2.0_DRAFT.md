@@ -273,246 +273,115 @@ libs/
 
 ## 4. Information Flow: The Truth Cascade
 
-### Example 1: Quick Type Lookup
+**[Examples to be added - placeholder for BPD-001 specific workflows]**
 
-```
-User: "What voltage types exist?"
-    ↓
-AI Agent loads: basic-app-datatypes/llms.txt (Tier 1, ~500 tokens)
-    ↓
-Answer: "23 types available. voltage_output_05v_s16 for ±5V DAC output..."
-    ↓
-Done. 99.75% of token budget remaining.
-```
-
-### Example 2: Wiring Safety Validation
-
-```
-User: "Is my Moku → probe wiring safe?"
-    ↓
-AI Agent loads: moku-models/llms.txt + riscure-models/llms.txt (Tier 1, ~1k tokens)
-    ↓
-Check: Moku:Go OUT1 = 10Vpp (±5V) vs DS1120A = 0-3.3V TTL
-    ↓
-Potential issue detected
-    ↓
-AI Agent loads: MODELS_INDEX.md (Tier 2, +1.5k tokens)
-    ↓
-Find integration pattern: "Platform ← Probe Wiring Safety"
-    ↓
-Answer: "Use TTL mode on Moku output (3.3V), not raw DAC (±5V). Safe connection confirmed."
-    ↓
-Done. Total: 2.5k tokens (1.25% of budget)
-```
-
-### Example 3: Adding New Type
-
-```
-User: "How do I add a new voltage type for ±10V?"
-    ↓
-AI Agent loads: basic-app-datatypes/llms.txt (Tier 1)
-    ↓
-Sees: "23 types defined. For adding types, see CLAUDE.md"
-    ↓
-AI Agent loads: basic-app-datatypes/CLAUDE.md (Tier 2, +3k tokens)
-    ↓
-Find section: "Adding New Types"
-    ↓
-Answer: "1. Add to BasicAppDataTypes enum
-         2. Add metadata to TYPE_REGISTRY
-         3. Add conversion function
-         4. Add tests
-         5. Update llms.txt catalog
-         6. Submit PR to basic-app-datatypes repo"
-    ↓
-Done. Total: 3.5k tokens (1.75% of budget)
-```
-
-### Example 4: Debugging VHDL Generation
-
-```
-User: "My generated shim has wrong bit slices"
-    ↓
-AI Agent loads: llms.txt (Tier 1, 1k tokens)
-    ↓
-Delegate to: forge-context agent
-    ↓
-AI Agent loads: forge-context/agent.md (Tier 2, +3k tokens)
-    ↓
-Still unclear, need implementation details
-    ↓
-AI Agent loads: forge/generator/codegen.py (Tier 3, +5k tokens)
-    ↓
-Trace bit slice calculation logic
-    ↓
-AI Agent loads: generated shim file (Tier 3, +3k tokens)
-    ↓
-Compare: Template logic vs actual output
-    ↓
-Identify bug: Off-by-one in bit slice calculation
-    ↓
-Done. Total: 12k tokens (6% of budget)
-```
+This section will contain concrete examples showing:
+- Quick probe capability lookup
+- Wiring safety validation workflow
+- Driver discovery patterns
+- VHDL FSM debugging scenarios
 
 ---
 
-## 5. Cross-Library Integration Patterns
+## 5. Component Integration Patterns
 
-From `forge/libs/MODELS_INDEX.md`:
-
-### Pattern 1: Type ← Platform Validation
-
-```python
-# Validate that a type is compatible with platform output
-from basic_app_datatypes import BasicAppDataTypes, TYPE_REGISTRY
-from moku_models import MOKU_GO_PLATFORM
-
-voltage_type = BasicAppDataTypes.VOLTAGE_OUTPUT_05V_S16
-metadata = TYPE_REGISTRY[voltage_type]
-# → voltage_range: "±5V"
-
-platform = MOKU_GO_PLATFORM
-dac_output = platform.get_analog_output_by_id('OUT1')
-# → voltage_range_vpp: 10.0 (±5V)
-
-# Validation
-assert metadata.voltage_range == "±5V"
-assert dac_output.voltage_range_vpp == 10.0
-print("✓ Type compatible with platform")
-```
-
-**Libraries involved:** basic-app-datatypes (authoritative for type), moku-models (authoritative for platform)
-
-### Pattern 2: Platform ← Probe Wiring Safety
+### Pattern 1: Platform ← Probe Wiring Safety
 
 ```python
 # Validate safe connection between Moku output and probe input
 from moku_models import MOKU_GO_PLATFORM
 from riscure_models import DS1120A_PLATFORM
+from bpd_core import validate_probe_moku_compatibility
 
-# Moku output spec
-moku_out = MOKU_GO_PLATFORM.get_analog_output_by_id('OUT1')
-# → voltage_range_vpp = 10.0 (can output 0-3.3V TTL mode)
+# Each library is authoritative for its domain
+platform = MOKU_GO_PLATFORM  # Platform specs from moku-models
+probe_specs = DS1120A_PLATFORM  # Probe specs from riscure-models
 
-# Probe input spec
-probe_in = DS1120A_PLATFORM.get_port_by_id('digital_glitch')
-# → voltage_min=0V, voltage_max=3.3V
+# bpd-core composes them for safety validation
+from bpd_drivers import DS1120ADriver
+driver = DS1120ADriver()
 
-# Safety check
-voltage = 3.3  # TTL mode
-if probe_in.is_voltage_compatible(voltage):
-    print("✓ Safe connection (use TTL mode, not raw DAC)")
-else:
-    print("✗ UNSAFE - voltage exceeds probe limits")
+# Cross-component validation
+validate_probe_moku_compatibility(driver, platform, output_id='OUT1')
+# → Checks: Moku OUT1 voltage range vs DS1120A input limits
+# → Result: "✓ Safe connection (use TTL mode, not raw DAC)"
 ```
 
-**Libraries involved:** moku-models (authoritative for Moku output), riscure-models (authoritative for probe input)
+**Components involved:**
+- **moku-models** (authoritative for platform I/O specs)
+- **riscure-models** (authoritative for probe electrical limits)
+- **bpd-core** (orchestrates validation)
 
-### Pattern 3: Type ← Probe Compatibility
+### Pattern 2: Driver ← Probe Specs
 
 ```python
-# Validate type usage for probe control
-from basic_app_datatypes import BasicAppDataTypes
+# Driver implementation uses probe specs as source of truth
 from riscure_models import DS1120A_PLATFORM
+from bpd_core import FIProbeInterface, ProbeCapabilities
 
-# User specifies control type
-trigger_type = BasicAppDataTypes.BOOLEAN_1
-# → 1-bit boolean
+class DS1120ADriver(FIProbeInterface):
+    def __init__(self):
+        # Read authoritative specs from riscure-models
+        self._probe_specs = DS1120A_PLATFORM
 
-# Probe trigger spec
-probe = DS1120A_PLATFORM
-trigger_port = probe.get_port_by_id('digital_glitch')
-# → Expects TTL signal (boolean-compatible)
-
-print("✓ boolean_1 type compatible with probe TTL trigger")
+    @property
+    def capabilities(self) -> ProbeCapabilities:
+        # Return capabilities from authoritative source
+        port = self._probe_specs.get_port_by_id('digital_glitch')
+        return ProbeCapabilities(
+            min_voltage_v=port.voltage_min,
+            max_voltage_v=port.voltage_max,
+            min_pulse_width_ns=50,  # DS1120A fixed
+            max_pulse_width_ns=50
+        )
 ```
 
-**Libraries involved:** basic-app-datatypes (authoritative for type), riscure-models (authoritative for probe)
+**Components involved:**
+- **riscure-models** (authoritative for DS1120A specs)
+- **bpd-core** (defines FIProbeInterface protocol)
+- **bpd-drivers** (implements driver using authoritative specs)
+
+### Pattern 3: Framework ← VHDL Interface
+
+```python
+# Python framework controls VHDL FSM through Moku registers
+from moku_models import MOKU_GO_PLATFORM
+from bpd_core import FIProbeInterface
+
+class GenericProbeDriver(FIProbeInterface):
+    def arm(self):
+        # Write to Moku control register
+        # VHDL FSM: IDLE → ARMED
+        self._moku_device.set_control_register('arm', 1)
+
+    def trigger(self):
+        # Write to Moku control register
+        # VHDL FSM: ARMED → PULSE_ACTIVE → COOLDOWN
+        self._moku_device.set_control_register('trigger', 1)
+```
+
+**Components involved:**
+- **bpd-core** (Python framework API)
+- **bpd-vhdl** (VHDL FSM implementation)
+- **moku-models** (platform register interface)
 
 ---
 
-## 6. AI Agent Hierarchy (Delegation Model)
+## 6. Git Submodule Workflow
 
-### Monorepo-Level Agents (`.claude/agents/`)
+### The Structure
 
-**probe-design-orchestrator** (Primary coordinator)
-- Coordinates complete probe development workflow
-- Delegates to forge agents for specialized tasks
-- Tracks multi-probe state across forge/apps/
-- Handles cross-validation (VHDL ↔ package)
-
-**deployment-orchestrator**
-- Hardware deployment (package → Moku device)
-- Device discovery
-- Routing configuration
-
-**hardware-debug**
-- FSM debugging
-- State monitoring
-- Signal tracing
-
-### Forge-Level Agents (`forge/.claude/agents/`)
-
-**workflow-coordinator**
-- Multi-stage forge pipelines
-- Orchestrates forge-specific agents
-- End-to-end workflows
-
-**forge-context**
-- YAML → VHDL generation
-- Package creation
-- Register mapping optimization
-
-**deployment-context**
-- Package → hardware deployment
-- Moku device interaction
-
-**docgen-context**
-- Documentation generation
-- TUI creation
-- Python API generation
-
-**hardware-debug-context**
-- FSM debugging expert
-- Voltage-encoded state monitoring
-
-### Delegation Flow
+BPD-001 uses **flat composition** - submodules in `libs/` and `tools/`:
 
 ```
-User Request: "Create new probe DS1180_LASER"
-    ↓
-Monorepo Agent: probe-design-orchestrator
-    ↓
-Delegates to: forge-context (YAML validation)
-    ↓
-forge-context loads: basic-app-datatypes/llms.txt (validate types)
-    ↓
-forge-context loads: moku-models/llms.txt (validate platform)
-    ↓
-Delegates to: workflow-coordinator (package generation)
-    ↓
-Returns to: probe-design-orchestrator
-    ↓
-Cross-validates: VHDL ↔ manifest.json
-    ↓
-Delegates to: deployment-orchestrator (hardware deployment)
-    ↓
-Done. Probe operational.
+BPD-001/ (git repo)
+  ├── libs/moku-models/ (git submodule)
+  ├── libs/riscure-models/ (git submodule)
+  ├── libs/forge-vhdl/ (git submodule)
+  └── tools/forge-codegen/ (git submodule)
 ```
 
----
-
-## 7. Git Submodule Workflow
-
-### The Challenge
-
-Working across 4 levels of nested git repositories:
-
-```
-monorepo (git repo)
-  └── forge/ (git submodule)
-      └── libs/basic-app-datatypes/ (git submodule)
-```
+**Key insight:** No nested submodules - all at same level for discoverability
 
 ### The Pattern
 
