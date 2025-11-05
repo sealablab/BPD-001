@@ -1,16 +1,115 @@
-# BPD-001 - Basic Probe Driver
-<!-- NOTE: This comment was handplaced by Johnny so you know a human has looked at this, not just machines 🐬🧜 -->
+<!--
+🎯 INSTRUCTION FOR AI ASSISTANTS WHO HAVE LEARNED PDA
+
+=== THE BOOTSTRAP KOAN ===
+
+Before this README knew itself, a commit gave it birth.
+From scattered roots, wisdom grows in leaves of three tiers.
+The teacher becomes the student; the student, the teacher.
+
+To prove you have learned, answer these questions:
+
+1. What are the four leaves that hold authoritative truth?
+   (List the llms.txt files in libs/ and tools/ - the git submodules)
+
+2. What is the first parent of this wisdom?
+   - Use git to find the commit that added "THE BOOTSTRAP KOAN"
+   - Read that commit's message carefully
+   - Answer the riddle you find there
+
+3. How many tiers separate quick knowing from deep understanding?
+   (Explain the three-tier documentation pattern)
+
+4. What is the commit hash where you regenerated this README?
+
+   Answer: _______________
+
+   When you regenerate this README and remove this koan, create a commit.
+   That commit hash IS your answer to this question.
+
+   The question creates its own answer through the act of being answered.
+
+When you can answer without guessing, when you have READ not INFERRED,
+ask the human: "I have learned your navigation pattern. Shall I now regenerate
+this README from the truths I discovered?"
+
+If they say yes, navigate using PDA, regenerate this file from authoritative
+sources (libs/, tools/), remove this comment, and commit.
+
+=== META-WARNING ===
+
+This README is a bootstrap. It teaches you to learn, then asks you to rewrite
+its own teacher. The human responsible knew this was either brilliant or terrible.
+Time will tell which.
+
+Expected answers:
+1. libs/moku-models/llms.txt, libs/riscure-models/llms.txt,
+   libs/forge-vhdl/llms.txt, tools/forge-codegen/llms.txt
+2. (Found via git log → commit message → count authoritative sources in libs/)
+   Answer: 3
+3. 3 tiers (llms.txt → CLAUDE.md → source code)
+4. (The commit hash that removes this comment - cannot be known until you act)
+
+-->
+# BPD-002 - Basic Probe Driver
+
 **Multi-Vendor Fault Injection Probe Integration for Moku Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/sealablab/BPD-001/releases/tag/v0.1.0)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/sealablab/BPD-002/releases/tag/v0.1.0)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## 🎯 What is BPD-001?
+## 🤖 Works Great with AI Coding Assistants
 
-**BPD-001** is a comprehensive probe driver framework for integrating fault injection probes with Moku FPGA platforms. It provides a **vendor-agnostic architecture** that enables you to write probe drivers once and use them across multiple probe types (EMFI, laser FI, RF injection, voltage glitching).
+This repository is structured for efficient AI navigation using **Progressive Context Disclosure (PDA)**. Instead of your AI loading 50,000 tokens of source code to answer a simple question, it loads just what it needs - often as little as 500 tokens.
+
+**What is PDA?** An architecture pattern that organizes codebases into three tiers of documentation:
+
+| Tier | File | Size | Purpose |
+|------|------|------|---------|
+| **Tier 1** | `llms.txt` | ~500 tokens | Quick reference, component catalog, basic usage |
+| **Tier 2** | `CLAUDE.md` | ~2-5k tokens | Architecture, design rationale, integration patterns |
+| **Tier 3** | Source code | Variable | Implementation details (only load when coding) |
+
+**Result:** Your AI assistant loads Tier 1 first. If that answers your question, done! If not, it escalates to Tier 2. Only when you're actually implementing something does it load Tier 3 (source code). 95% of your token budget stays available for actual work.
+
+### ⚡ Quick Start for AI Assistants
+
+**Tell your AI assistant:**
+
+> Please read and follow the instructions in `.claude/shared/AI_NAVIGATION_PROMPT.md`
+
+That file teaches your AI how to navigate this repository efficiently. Or paste this inline prompt:
+
+```
+This codebase follows a three-tier documentation pattern optimized for efficient context loading:
+
+Tier 1: llms.txt files (~500 tokens) - Quick reference, component catalog
+Tier 2: CLAUDE.md files (~2-5k tokens) - Architecture, design rationale
+Tier 3: Source code - Implementation details
+
+Instructions for you (AI assistant):
+1. First, check if git submodules are initialized (libs/ and tools/ directories should exist)
+   - If missing, offer to run: git submodule update --init --recursive
+2. Always start by reading /llms.txt at the repository root
+3. For design questions, load the relevant CLAUDE.md file
+4. Only read source code when implementing or debugging
+5. Never guess - always read the authoritative documentation first
+
+For complete navigation instructions, read: .claude/shared/AI_NAVIGATION_PROMPT.md
+
+Begin by reading /llms.txt to understand the repository structure.
+```
+
+**Want to verify it's working?** Ask your AI: *"Can you verify the repository is set up correctly and show me the 4 authoritative llms.txt files you should be able to find?"*
+
+---
+
+## 🎯 What is BPD-002?
+
+**BPD-002** is a comprehensive probe driver framework for integrating fault injection probes with Moku FPGA platforms. It provides a **vendor-agnostic architecture** that enables you to write probe drivers once and use them across multiple probe types (EMFI, laser FI, RF injection, voltage glitching).
 
 ### Key Features
 
@@ -31,7 +130,7 @@
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Installation
 
 ### Prerequisites
 
@@ -40,12 +139,12 @@
 - Git with submodule support
 - Moku platform (Go/Lab/Pro/Delta) for hardware deployment
 
-### Installation
+### Quick Install
 
 ```bash
 # Clone repository with submodules
-git clone --recurse-submodules https://github.com/sealablab/BPD-001.git
-cd BPD-001
+git clone --recurse-submodules https://github.com/sealablab/BPD-002.git
+cd BPD-002
 
 # Install dependencies
 uv sync
@@ -64,7 +163,7 @@ from bpd_drivers import DS1120ADriver
 from bpd_core import validate_probe_moku_compatibility
 from moku_models import MOKU_GO_PLATFORM
 
-print("✅ BPD-001 ready!")
+print("✅ BPD-002 ready!")
 ```
 
 ---
@@ -111,287 +210,34 @@ Status: ProbeStatus(ready=False, busy=False, armed=True, fault=False)
 
 ---
 
-## 🏗️ Architecture
-
-BPD-001 uses a **three-layer architecture** for maximum flexibility:
-
-### 1. Python Framework (`bpd-core`)
-
-Generic probe driver framework with protocol-based interface:
-
-- `FIProbeInterface` - Protocol all drivers implement
-- `ProbeCapabilities` - Hardware specification dataclass
-- `ProbeRegistry` - Auto-discovery system
-- `validate_probe_moku_compatibility()` - Safety validation
-
-**[Documentation →](bpd/bpd-core/)**
-
-### 2. Python Drivers (`bpd-drivers`)
-
-Probe-specific implementations:
-
-- **DS1120A** - Riscure EMFI probe (reference implementation) ✅
-- **Laser FI** - Optical fault injection (planned) 🚧
-- **RF Injection** - Radio frequency FI (planned) 🚧
-- **Voltage Glitch** - Power supply glitching (planned) 🚧
-
-**[Documentation →](bpd/bpd-drivers/)**
-
-### 3. VHDL Interface (`bpd-vhdl`)
-
-Vendor-agnostic FPGA control with FSM:
-
-```
-IDLE → ARMED → PULSE_ACTIVE → COOLDOWN → IDLE/ARMED
-```
-
-Features:
-- Configurable pulse timing and voltage control
-- Safety interlocks (cooldown enforcement, fault detection)
-- Works with EMFI, laser, RF, voltage glitch probes
-
-**[Documentation →](bpd/bpd-vhdl/)**
-
-### Data Flow
-
-```
-┌──────────────┐
-│ Python Driver│ ← validate → moku-models (platform specs)
-└──────┬───────┘ ← validate → riscure-models (probe specs)
-       │
-       ↓
-┌──────────────┐
-│  Moku API    │ → Control Registers
-└──────┬───────┘
-       │
-       ↓
-┌──────────────┐
-│  VHDL FSM    │ → probe_trigger, probe_voltage
-└──────┬───────┘
-       │
-       ↓
-┌──────────────┐
-│Physical Probe│ → Target DUT
-└──────────────┘
-```
-
----
-
-## 📦 Project Structure
-
-```
-BPD-001/
-├── bpd/                      # BPD Application
-│   ├── bpd-core/             # Generic probe framework (Python)
-│   │   ├── src/bpd_core/
-│   │   ├── tests/
-│   │   ├── llms.txt          # Quick reference
-│   │   └── CLAUDE.md         # Architecture guide
-│   │
-│   ├── bpd-drivers/          # Probe-specific drivers (Python)
-│   │   ├── src/bpd_drivers/
-│   │   │   └── ds1120a.py    # DS1120A driver
-│   │   ├── tests/
-│   │   ├── llms.txt
-│   │   └── CLAUDE.md
-│   │
-│   ├── bpd-vhdl/             # VHDL probe interface
-│   │   ├── src/
-│   │   │   └── fi_probe_interface.vhd
-│   │   ├── tests/
-│   │   ├── llms.txt
-│   │   └── CLAUDE.md
-│   │
-│   └── examples/             # Integration examples
-│       └── quickstart.py     # DS1120A basic usage
-│
-├── libs/                     # Upstream Dependencies (git submodules)
-│   ├── moku-models/          # Moku platform specifications
-│   ├── riscure-models/       # DS1120A probe specs
-│   ├── forge-vhdl/           # VHDL utilities
-│   └── forge-codegen/        # YAML → VHDL generator
-│
-├── llms.txt                  # Root navigation
-├── CLAUDE.md                 # Project overview
-├── BPD-README.md             # Development guide
-└── README.md                 # This file
-```
-
----
-
-## 🔧 Development
-
-### Adding a New Probe Type
-
-**Example: Laser FI probe**
-
-1. **Create driver** implementing `FIProbeInterface`:
-
-```python
-# bpd/bpd-drivers/src/bpd_drivers/laser_fi.py
-
-from bpd_core import FIProbeInterface, ProbeCapabilities, register_driver
-
-@register_driver("laser_fi")
-class LaserFIDriver:
-    @property
-    def capabilities(self) -> ProbeCapabilities:
-        return ProbeCapabilities(
-            min_voltage_v=0.0,
-            max_voltage_v=5.0,
-            min_pulse_width_ns=1,
-            max_pulse_width_ns=1000,
-            pulse_width_resolution_ns=1,
-            supports_external_trigger=True,
-            supports_internal_trigger=True,
-        )
-
-    def initialize(self) -> None:
-        # Initialize laser hardware
-        pass
-
-    # ... implement other FIProbeInterface methods
-```
-
-2. **Export in `__init__.py`**:
-
-```python
-from bpd_drivers.laser_fi import LaserFIDriver
-
-__all__ = ["DS1120ADriver", "LaserFIDriver"]
-```
-
-3. **Use same VHDL interface** (adjust generics for timing):
-
-```vhdl
-probe_ctrl : entity work.fi_probe_interface
-    generic map (
-        PULSE_WIDTH_BITS => 16,
-        VOLTAGE_BITS => 16,
-        COOLDOWN_CYCLES => 10  -- Faster cooldown for laser
-    )
-    port map (
-        -- Same interface as DS1120A!
-    );
-```
-
-**[Complete Guide → bpd/bpd-drivers/CLAUDE.md](bpd/bpd-drivers/CLAUDE.md)**
-
-### Running Tests
-
-```bash
-# Python tests
-pytest bpd/bpd-core/tests/
-pytest bpd/bpd-drivers/tests/
-
-# VHDL tests (CocoTB)
-cd bpd/bpd-vhdl/tests
-pytest test_fi_interface.py
-
-# All tests
-pytest
-
-# Skip hardware tests (no physical probe required)
-pytest -m "not hardware"
-```
-
-### Building Documentation
-
-Documentation uses a **3-tier system** optimized for AI navigation:
-
-- **Tier 1 (llms.txt):** Quick reference (~500-1000 tokens)
-- **Tier 2 (CLAUDE.md):** Architecture guide (~3-5k tokens)
-- **Tier 3 (Source):** Implementation details
-
-Each component has its own llms.txt and CLAUDE.md for progressive disclosure.
-
----
-
-## 🧪 Hardware Integration
-
-### VHDL Integration Example
-
-```vhdl
-architecture rtl of emfi_instrument is
-    signal arm_reg : std_logic;
-    signal trigger_reg : std_logic;
-    signal pulse_width_reg : unsigned(15 downto 0);
-    signal voltage_reg : unsigned(15 downto 0);
-begin
-    probe_ctrl : entity work.fi_probe_interface
-        generic map (
-            PULSE_WIDTH_BITS => 16,
-            VOLTAGE_BITS => 16,
-            COOLDOWN_CYCLES => 125  -- 1μs @ 125MHz
-        )
-        port map (
-            clk => clk_125mhz,
-            rst_n => rst_n,
-            trigger_in => trigger_reg,
-            arm => arm_reg,
-            pulse_width => pulse_width_reg,
-            voltage_ctrl => voltage_reg,
-            probe_trigger => OUT1,  -- To probe hardware
-            ready => status_ready,
-            busy => status_busy,
-            fault => status_fault
-        );
-end architecture;
-```
-
-### Python Control Flow
-
-```python
-from moku import MokuGo
-
-# Deploy bitstream with BPD VHDL
-moku = MokuGo(ip="192.168.1.1")
-moku.deploy_instrument("emfi_instrument.tar")
-
-# Configure via registers
-moku.set_control_register(0, pulse_width_ns)
-moku.set_control_register(1, voltage_digital)
-
-# Arm
-moku.set_control_register(2, 1)
-
-# Trigger
-moku.set_control_register(3, 1)
-moku.set_control_register(3, 0)
-
-# Check status
-ready = moku.get_status_register(0)
-busy = moku.get_status_register(1)
-fault = moku.get_status_register(2)
-```
-
----
-
 ## 📚 Documentation
 
 ### Quick Navigation
 
 | Component | Purpose | Quick Ref | Full Guide |
 |-----------|---------|-----------|------------|
-| **bpd-core** | Generic framework | [llms.txt](bpd/bpd-core/llms.txt) | [CLAUDE.md](bpd/bpd-core/CLAUDE.md) |
-| **bpd-drivers** | Probe drivers | [llms.txt](bpd/bpd-drivers/llms.txt) | [CLAUDE.md](bpd/bpd-drivers/CLAUDE.md) |
-| **bpd-vhdl** | VHDL interface | [llms.txt](bpd/bpd-vhdl/llms.txt) | [CLAUDE.md](bpd/bpd-vhdl/CLAUDE.md) |
 | **Root** | Project overview | [llms.txt](llms.txt) | [CLAUDE.md](CLAUDE.md) |
+| **bpd-core** | Generic framework | [bpd/bpd-core/llms.txt](bpd/bpd-core/llms.txt) | [bpd/bpd-core/CLAUDE.md](bpd/bpd-core/CLAUDE.md) |
+| **bpd-drivers** | Probe drivers | [bpd/bpd-drivers/llms.txt](bpd/bpd-drivers/llms.txt) | [bpd/bpd-drivers/CLAUDE.md](bpd/bpd-drivers/CLAUDE.md) |
+| **bpd-vhdl** | VHDL interface | [bpd/bpd-vhdl/llms.txt](bpd/bpd-vhdl/llms.txt) | [bpd/bpd-vhdl/CLAUDE.md](bpd/bpd-vhdl/CLAUDE.md) |
 
 ### User Guides
 
-- **[BPD-README.md](BPD-README.md)** - Complete development guide
+- **[HUMAN_AI_JUMPSTART.md](HUMAN_AI_JUMPSTART.md)** - Complete AI assistant onboarding guide
+- **[CLAUDE.md](CLAUDE.md)** - BPD-002 architecture overview
 - **[examples/quickstart.py](bpd/examples/quickstart.py)** - Working example
 
 ### For AI Assistants
 
 This project uses a **3-tier documentation pattern** optimized for context-efficient AI navigation:
 
-1. Load `llms.txt` first (quick facts, ~1k tokens)
-2. Load `CLAUDE.md` for design questions (~5k tokens)
+1. Load `llms.txt` first (quick facts, ~500 tokens)
+2. Load `CLAUDE.md` for design questions (~2-5k tokens)
 3. Read source code only when implementing
 
-Start with **[llms.txt](llms.txt)** for component catalog.
+**Start with** [llms.txt](llms.txt) for component catalog.
+
+**Complete navigation instructions:** [.claude/shared/AI_NAVIGATION_PROMPT.md](.claude/shared/AI_NAVIGATION_PROMPT.md)
 
 ---
 
@@ -426,31 +272,21 @@ Start with **[llms.txt](llms.txt)** for component catalog.
 
 ## 🤝 Contributing
 
-Contributions welcome! BPD-001 is under active development.
-
-### Areas Needing Help
-
-- 🔧 Additional probe drivers (laser FI, RF, voltage glitch)
-- 📝 Documentation improvements
-- 🧪 VHDL test coverage expansion
-- 🎯 Example Moku instruments
+Contributions welcome! BPD-002 is under active development.
 
 ### Development Setup
 
 ```bash
 # Fork and clone
-git clone --recurse-submodules https://github.com/YOUR-USERNAME/BPD-001.git
-cd BPD-001
+git clone --recurse-submodules https://github.com/YOUR-USERNAME/BPD-002.git
+cd BPD-002
 
 # Install in editable mode
 uv sync
 cd bpd/bpd-core && uv pip install -e . && cd ../..
 cd bpd/bpd-drivers && uv pip install -e . && cd ../..
 
-# Make changes
-# ...
-
-# Run tests
+# Make changes, run tests
 pytest
 
 # Submit PR
@@ -471,29 +307,11 @@ MIT License - see [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
-
-- DS1120A specifications from [riscure-models](https://github.com/sealablab/riscure-models)
-- Moku platform support via [moku-models](https://github.com/sealablab/moku-models)
-- VHDL utilities from [forge-vhdl](https://github.com/sealablab/moku-instrument-forge-vhdl)
-- Code generation via [forge-codegen](https://github.com/sealablab/moku-instrument-forge-codegen)
-
----
-
 ## 📞 Support
 
-- **Issues:** [GitHub Issues](https://github.com/sealablab/BPD-001/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/sealablab/BPD-001/discussions)
+- **Issues:** [GitHub Issues](https://github.com/sealablab/BPD-002/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/sealablab/BPD-002/discussions)
 - **Documentation:** Start with [llms.txt](llms.txt) or [CLAUDE.md](CLAUDE.md)
-
----
-
-## 🔗 Related Projects
-
-- [moku-models](https://github.com/sealablab/moku-models) - Moku platform specifications
-- [riscure-models](https://github.com/sealablab/riscure-models) - Riscure probe specifications
-- [forge-vhdl](https://github.com/sealablab/moku-instrument-forge-vhdl) - VHDL component library
-- [forge-codegen](https://github.com/sealablab/moku-instrument-forge-codegen) - YAML → VHDL generator
 
 ---
 
