@@ -1,14 +1,14 @@
-# Moku Instrument Forge - Monorepo Template
+# BPD-001 - Basic Probe Driver
 
-> Template for Moku platform development with custom probe integration
+> Multi-vendor fault injection probe integration for Moku platform
 
 ## What is this?
 
-**Template repository** for building custom FPGA instruments on Moku platforms (Go/Lab/Pro/Delta) with integrated probe support. Uses composable git submodules for: type system → code generation → VHDL implementation → hardware deployment.
+**BPD-001** is a complete probe driver framework for integrating fault injection probes (EMFI, laser FI, RF, voltage glitching) with Moku FPGA platforms (Go/Lab/Pro/Delta). Uses composable git submodules for: type system → code generation → VHDL implementation → hardware deployment.
 
-**Primary use case:** Adding YOUR custom probe models (laser, RF, etc.) to Moku platform
+**Current Status:** v0.1.0 - DS1120A EMFI reference implementation complete
 
-**Reference implementation:** Moku + Riscure DS1120A EMFI probe
+**Key Innovation:** Vendor-agnostic Python + VHDL architecture enables writing probe drivers once and using them across multiple probe types
 
 **Key insight:** Tiered documentation with submodule delegation enables focused context loading.
 
@@ -223,10 +223,16 @@ git push
 
 ```bash
 # Clone with submodules
-git clone --recurse-submodules https://github.com/sealablab/moku-instrument-forge-mono-repo.git
+git clone --recurse-submodules https://github.com/sealablab/BPD-001.git
+cd BPD-001
 
 # Setup Python environment
 uv sync
+
+# Install BPD packages
+cd bpd/bpd-core && uv pip install -e . && cd ../..
+cd bpd/bpd-drivers && uv pip install -e . && cd ../..
+cd bpd/bpd-vhdl && uv pip install -e . && cd ../..
 
 # Run tests
 pytest

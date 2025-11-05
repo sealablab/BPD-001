@@ -179,7 +179,7 @@ validate_probe_moku_compatibility(driver, MOKU_GO_PLATFORM)
 
 ## Adding New Drivers
 
-### Quick Template
+### Quick Reference
 
 ```python
 # bpd/bpd-drivers/src/bpd_drivers/my_probe.py
@@ -301,7 +301,7 @@ bpd-drivers/
 ### Add Laser FI Probe
 **Task:** "Implement driver for new laser probe"
 **→ Read:** [CLAUDE.md](CLAUDE.md) Section "Adding New Drivers"
-**→ Template:** Use DS1120A as reference implementation
+**→ Reference:** Use DS1120A as reference implementation
 
 ### Debug Driver Registration
 **Task:** "Driver not showing up in list_drivers()"

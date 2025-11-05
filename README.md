@@ -473,10 +473,10 @@ MIT License - see [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Built using [Moku Instrument Forge template](https://github.com/sealablab/moku-instrument-forge-mono-repo) v2.0
 - DS1120A specifications from [riscure-models](https://github.com/sealablab/riscure-models)
 - Moku platform support via [moku-models](https://github.com/sealablab/moku-models)
 - VHDL utilities from [forge-vhdl](https://github.com/sealablab/moku-instrument-forge-vhdl)
+- Code generation via [forge-codegen](https://github.com/sealablab/moku-instrument-forge-codegen)
 
 ---
 

@@ -269,7 +269,7 @@ probe_ctrl : entity work.fi_probe_interface
 - Voltage safety validation patterns
 - 3-tier documentation (llms.txt → CLAUDE.md → source)
 
-Keep it as a template even if you're not using Riscure hardware.
+Keep it as a reference implementation even if you're not using Riscure hardware.
 
 ### Q: Can I modify upstream submodules (libs/)?
 
