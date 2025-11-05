@@ -14,6 +14,8 @@
 
 **Architecture:** v2.0.0 - Clean separation between tools and foundational libraries (flat structure)
 
+**For AI Agents:** See [.claude/shared/CONTEXT_MANAGEMENT.md](.claude/shared/CONTEXT_MANAGEMENT.md) for complete token optimization strategy. Load minimally (llms.txt first), expand as needed (CLAUDE.md for design, source for implementation). This keeps 95% of your token budget available for actual work.
+
 ## Repository Structure
 
 ### BPD Application (This Project)
